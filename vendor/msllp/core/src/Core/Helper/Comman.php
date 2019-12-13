@@ -21,7 +21,15 @@ define('ENCRYPTION_KEY', 'd0a7e7997b6d5fcd55f4b5c32611b87cd923e88837b63bf2941ef8
 class Comman
 {
 
+    public static function checkMsAppReq($r,$id='MS-USER-CODE'){
+        $return=false;
+        if(!(array_key_exists('ms-app-requested-with-right',$r->header()) &&  reset($r->header()['ms-app-requested-with-right']) ==$id)){
+            $return=true;
 
+        }
+        return $return;
+
+    }
     public static function checkAllTrueArray(array $a):bool{
         $er=[];
         foreach ($a as $k=>$v){
@@ -332,7 +340,9 @@ if($master && array_key_exists('locationOfFile', $array)){
             switch ($link['type']){
 
                 case 'get':
-                    \Route::get($link['route'],$method)->name($link['name'])->middleware(\MS\Middlelwares\checkValidRoute::class);
+                   // \Route::get($link['route'],$method)->name($link['name'])->middleware(\MS\Middlelwares\checkValidRoute::class);
+                    \Route::get($link['route'],$method)->name($link['name'])->middleware('web');
+
                     break;
 
                 case 'post':

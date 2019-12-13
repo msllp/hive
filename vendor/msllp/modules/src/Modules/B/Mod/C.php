@@ -22,11 +22,7 @@ class C extends BaseController
 
         ];
 
-    public function MaintainaceDashboard(){
 
-
-        return view("MS::core.layouts.MS.mpanel");
-    }
 
 
     public function SideNavForMaintainaceDashboard(Request $r){
@@ -272,5 +268,5 @@ class C extends BaseController
         $m=F::getEventModel();
         return $m->ForPagination($r);
     }
-    
+
 }

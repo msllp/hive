@@ -32,6 +32,9 @@ return
             'foreign_key_constraints' => true,
         ],
 
+
+
+
         'DCM_User_Data' => [
             'driver' => 'sqlite',
             'database' => base_path('MS/DB/Master/DCM_User_Data'),
@@ -44,6 +47,30 @@ return
             'prefix' => '',
             'foreign_key_constraints' => true,
         ],
+
+///////For Accounts
+
+
+        'AM'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_ACCOUNTS_Master'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+        'AC'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_ACCOUNTS_Config'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+        'AD'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_ACCOUNTS_Data'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+
+
 
 
     ];

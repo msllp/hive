@@ -25,7 +25,7 @@ return [
 
                 [
                     'name'=>'MSUsername',
-                    'vName'=>'Username',
+                    'vName'=>\Lang::get('UI.username'),
                     'type'=>'string',
                     'input'=>'text',
                     "validation"=>['required'=>true,]

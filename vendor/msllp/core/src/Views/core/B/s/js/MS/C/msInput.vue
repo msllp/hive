@@ -118,7 +118,7 @@
 
             <div v-if="inputType == 'option'" class="flex flex-wrap" :class="msValid">
 
-                <span class=" select-none" :class="{'w-4/12 mr-2':!onMobile,'w-full':onMobile}">{{inputVname}}  <i class="" v-if="(msValue!=null ) && (msValue.search('msicon-') != '-1')" :class='msValue'></i></span>
+                <span class=" select-none" :class="{'w-4/12 mr-2':!onMobile,'w-full':onMobile}">{{inputVname}}  <i class="" v-if="(msValue!=null ) && ((msValue.search('msicon-') != '-1') || (msValue.search('flaticon-') != '-1') )" :class='msValue'></i></span>
 
                 <select :name="inputName" class="border focus:outline-none focus:shadow-outline lg:flex-1" :class="{'w-full':onMobile}" size="1" v-model="msValue" >
                     <option v-for="(radio,key) in msData.verifyBy.msdata" v-bind:value="radio[msData.verifyBy.value]" >
@@ -217,7 +217,8 @@
             if(this.msData.hasOwnProperty('name'))
             {
                 if(this.msData.hasOwnProperty('inputMultiple')){
-                    this.inputName=this.msData.name+"["+this.msGroupIndex+"]";
+                    this.inputName=this.msData.name;
+                    //this.inputName=this.msData.name+"["+this.msGroupIndex+"]";
                 }else{
                     this.inputName=this.msData.name;
                 }
@@ -236,10 +237,14 @@
             {
 
                 if(this.msData.verifyBy.hasOwnProperty('msdata'))this.inputAuto=this.msData.verifyBy.msdata;
+
                 if(this.msData.verifyBy.hasOwnProperty('value'))this.dValue=this.msData.verifyBy.value;
                 if(this.msData.verifyBy.hasOwnProperty('text'))this.dText=this.msData.verifyBy.text;
 
 
+                if (this.inputMultiple){
+                 //   this.fdValue=this.inputAuto.find(data=>{data[this.dValue]==});
+                }
 
             }
 
@@ -302,7 +307,8 @@
 
                this.msValue=localISOTime;
             }
-            this.$parent.setInputData(this.inputName,this.msValue);
+
+            this.$parent.setInputData(this.inputName,this.msValue,this.inputMultiple);
 
             if ( window.innerWidth < 800  )this.onMobile=true;
           //  console.log(this.inputAuto);
@@ -452,6 +458,7 @@
                     this.msValid=" ";
                 }
                 //  console.log(val);
+
                 this.$parent.setInputData(this.inputName,val);
 
             }
