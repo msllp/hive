@@ -37,7 +37,7 @@ class MSForm
     public $namespace,$id,$perFix,$data,$msdb,$fields,$dbMaster,$action;
     public $newForm=true;
 
-    public $accessAction=['add','back','edit'];
+    public $accessAction=['add','back','edit','signin'];
 
     public $attachedAction=[];
 
@@ -176,7 +176,12 @@ class MSForm
             //dd(in_array($type,$this->dbMaster['MSforms'][$this->formID]['actions']));
             //dd();
             if(in_array($type,$this->accessAction) && in_array($type,$this->dbMaster['MSforms'][$this->formID]['actions']))
+            {
                 $returnData[$type]=$btnData;
+            }else{
+              //  dd( $returnData);
+            }
+
         }
 
 
@@ -307,7 +312,7 @@ class MSForm
             }
 
             //var_dump($key);
-
+            //TODO Finish validation to pass proper data to Vue Components
             if(array_key_exists('validation',$data) && array_key_exists($key,$data['validation']))
             {
                 dd(array_key_exists($key,$data['validation']));
@@ -373,6 +378,7 @@ class MSForm
 
     }
     private function make4Vue($str){
+        //var_dump($str);
             $str= strtolower(str_replace(' ','_',$str)) ;
             return $str;
     }
@@ -403,7 +409,7 @@ class MSForm
 
                     //dd();
                     $aray=$this->getFieldFromFields($fieldName);
-                    if($aray == null)dd($fieldName);
+                    if($aray == null)dd($fieldName); //TODO Find proper out put for no array found
 //                if(array_key_exists('fieldGroupMultiple',$this->dbMaster) && $this->dbMaster['fieldGroupMultiple'])
 //                    $aray['groupInput']=$this->make4Vue($title);
 
@@ -500,7 +506,7 @@ class MSForm
 
 
                 $fields=$this->makeFieldsFromGroup($fData)  ;
-             //   dd($fields);
+
                 $this->returnHTML['formData']=$fields;
            //     if()mod_Tables
 
@@ -640,7 +646,10 @@ class MSForm
         dd($d);
 
     }
-
+    public function viewRaw(){
+        $this->returnHTML['actionButton']=$this->viewActionBtn();
+        return $this->returnHTML;
+    }
     public function view(){
         //dd($this->returnHTML);
 
@@ -649,7 +658,9 @@ class MSForm
 //            $this->returnHTML['formValue']=$this->makeDataValueForView();
 //        }
         //   $this->returnHTML[]='</div>';
-      //  dd($this->returnHTML);
+
+     //   dd(  );
+      // dd($this );
      //  return view("MS::core.layouts.Form.formPlateRaw")->with("form",$this->returnHTML);
         return view("MS::core.layouts.Form.formPlate")->with("form",$this->returnHTML);
         return view("MS::core.layouts.Form.formPlate")->with("form",implode("",$this->returnHTML));

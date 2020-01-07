@@ -5,9 +5,10 @@
 
 Route::prefix('Core')->group(function () {
 
-Route::prefix('User')->group(function () {
-    \MS\Core\Helper\Comman::loadCustom(['locationOfFile'=>'Users.R'],'b',true);
-});
+    Route::prefix('User')->group(function () {
+        \MS\Core\Helper\Comman::loadCustom(['locationOfFile'=>'Users.R'],'b',true);
+    });
+
     Route::prefix('Accounts')->group(function () {
         \MS\Core\Helper\Comman::loadCustom(['locationOfFile'=>'Accounts.R'],'b',true);
     });
@@ -17,6 +18,9 @@ Route::prefix('User')->group(function () {
         \MS\Core\Helper\Comman::loadCustom(['locationOfFile'=>'Mod.R'],'b',true);
     });
 
+    Route::prefix('Company')->group(function () {
+        \MS\Core\Helper\Comman::loadCustom(['locationOfFile'=>'Company.R'],'b',true);
+    });
 
 
 

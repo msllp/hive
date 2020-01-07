@@ -5,7 +5,7 @@ return [
     "Company_Master"=>[
 
     'tableName'=>'Company_Master',
-    'connection'=>'AC',
+    'connection'=>'CM',
     'fields'=>[
 
         [
@@ -13,6 +13,7 @@ return [
             'vName'=>\Lang::get('Company.id'),
             'type'=>'string',
             'input'=>'auto',
+            'callback'=>'genUniqId',
             "validation"=>['required'=>true,]
         ],
 
@@ -36,7 +37,7 @@ return [
             'vName'=>\Lang::get('Company.type'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+         //   "validation"=>['required'=>true,]
         ],
         [
             'name'=>'CompanyAddress1',
@@ -57,7 +58,7 @@ return [
             'vName'=>\Lang::get('Company.ad3'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+    //        "validation"=>['required'=>true,]
         ],
         [
             'name'=>'CompanyCity',
@@ -101,30 +102,30 @@ return [
             'vName'=>\Lang::get('Company.gst'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+  //          "validation"=>['required'=>true,]
         ],
         [
             'name'=>'CompanyPANTAN',
             'vName'=>\Lang::get('Company.pan'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+   //         "validation"=>['required'=>true,]
         ],
         [
             'name'=>'CompanyCIN',
             'vName'=>\Lang::get('Company.cin'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+    //        "validation"=>['required'=>true,]
         ],
 
-        ,
+
         [
             'name'=>'CompanyHasBranch',
             'vName'=>\Lang::get('Company.cin'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+ //           "validation"=>['required'=>true,]
         ],
 
         [
@@ -132,23 +133,29 @@ return [
             'vName'=>\Lang::get('Company.role'),
             'type'=>'string',
             'input'=>'text',
-            "validation"=>['required'=>true,]
+     //       "validation"=>['required'=>true,]
         ],
 
 
 
     ],
     'fieldGroup'=>[
-    'Company Basic Details'=>['CompanyName','CompanyShortName',],
-    'Legal Details'=>['CompanyType','CompanyEmail','CompanyGST','CompanyPANTAN','CompanyCIN',],
-    'Address Details'=>['CompanyAddress1','CompanyAddress2','CompanyAddress3','CompanyCity','CompanyState','CompanyPincode',],
-    'Contact Details'=>['CompanyContactNo','CompanyEmail',]
+        \Lang::get('Company.combasic')=>['UniqId','CompanyName','CompanyShortName',],
+        \Lang::get('Company.comlegal')=>['CompanyType','CompanyEmail','CompanyGST','CompanyPANTAN','CompanyCIN',],
+        \Lang::get('Company.comaddress')=>['CompanyAddress1','CompanyAddress2','CompanyAddress3','CompanyCity','CompanyState','CompanyPincode',],
+        \Lang::get('Company.comdconde')=>['CompanyContactNo','CompanyEmail',]
     ],
     'fieldGroupMultiple'=>[
 
     ],
     'action'=>[
 
+        'add'=>[
+            "btnColor"=>"bg-green",
+            "route"=>"Company.AddFormPost",
+            "btnIcon"=>"fi2 flaticon-plus",
+            'btnText'=>\Lang::get('Company.comadd'),
+        ],
 
 
 
@@ -156,13 +163,30 @@ return [
     'validationMessage'=>[
     ],
     'MSforms'=>[
+        'add_company'=>[
+            'title'=>\Lang::get('Company.comadd'),
+            'groups'=>[ \Lang::get('Company.combasic'), \Lang::get('Company.comlegal'),\Lang::get('Company.comaddress'),\Lang::get('Company.comdconde')],
+            'actions'=>['add']
 
-    ],
+        ],
+        ],
     'MSViews'=>[
+        'view_all'=>[
+            'title'=>'View all Company',
+            'icon'=>'fas fa-users',
+            'groups'=>[\Lang::get('Company.combasic'),\Lang::get('Company.comlegal')],
+            'searchable'=>true,
+         //   'actions'=>['add'],
+        //    'massAction'=>['add'],
+       //     'searchAllowed'=>[],
+            'pagination'=>true,
+            'paginationLink'=>'Company.viewFormAjax'
 
 
+        ]
+
+        ],
     ],
-],
 
 
     ];

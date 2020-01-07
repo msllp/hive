@@ -15,7 +15,9 @@ class F
 {
 
 
-
+    private function info(){
+        return true;
+    }
     public static function setupApp():array {
         $setupStatus=[];
         $function=[
@@ -32,13 +34,16 @@ class F
             'createRouteTable'=>'Master Routes Configuration started',
             'fillDataInRoute'=>'Master Routes Configuration finished',
             'createMasterEventTable'=>'Master Events Configuration started',
-            //''=>'Master Events Configuration finished',
+            'info'=>'Master Events Configuration finished',
             /////////Master Modules///////////
             'createUserTypeTable'=>'Master User Module Configuration started',
             'fillDataInUserType'=>'Progress 10% : Master User Type Configuration Started',
+            'createUserMaster'=>'Progress 15% : Master User Module Configuration Started',
+
             'createAppUser'=>'Progress 20%  : Master User Type Configuration finished',
             'createAccountConfig'=>'Progress 30% :Master Account Configuration Started',
             'fillDataInAccountConfig'=>'Progress 40% :Master Account Configuration finished',
+            'CreatCompanyMaster'=>'Progress 50% :Company Nodule Configuration finished',
 
 
         ];
@@ -279,14 +284,124 @@ public function fillDataInAccountConfig(){
 
 
 
+public function CreatCompanyMaster(){
+
+
+
+    $this->cDB(['COMPANY']);
+    $f=[
+        \MS\Mod\B\Company\F::getCompanyModel(),
+
+    ];
+    $e=[];
+    foreach ($f as $m){
+
+        if(!($this->cNmWM($m)))$e[]=$m;
+    }
+    //  dd( $f);
+    if(count($e)>0)return false;
+    return true;
+
+}
+public function createUserMaster(){
+    $this->cDB(['USERS']);
+    $f=[
+       'CreateTable'=>[ \MS\Mod\B\Users\F::getUserSourceModel(), ],
+       'DataFillInTable'=>[ ],
+       'BatchProccess'=>['fillDefaultDatainMasterUserMod'],
+    ];
+    $e=[];
+    return $this->setupMod($f);
+}
+
+
+private function fillDefaultDatainMasterUserMod(){
+
+
+        $d=[
+            [
+                'm'=>\MS\Mod\B\Users\F::getUserSourceModel(),
+                'f'=>base_path(implode(DS,['vendor','msllp','modules','src','Modules','B','Users','D','DefaultUserSources.php'])),
+                'u'=>['VerifyName','UniqId']
+            ],
+
+        ];
+        $e=[];
+        foreach ($d as $t){
+            $data=require($t['f']);
+            if(!$this->ftD($t['m'],$data,$t['u']))$e[]=$t;
+
+        }
+
+
+
+        if(count($e)>0)return false;
+        return true;
+
+}
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////Do not edit /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function ftdfa($data,$actions){
+    private function setupMod($f){
+        $e=[];
+        foreach ($f as $type=>$fType){
+            switch ($type){
+                case 'CreateTable':
+                    foreach ($f[$type] as $m){
+                        if(!($this->cNmWM($m)))$e[]=$m;
+                    }
+                    break;
+                case 'DataFillInTable':
+                    break;
+                case 'BatchProccess':
+                    foreach ($fType as $m){
+                       // dd($m);
+                        if(!($this->$m()))$e[]=$m;
+                    }
+                    break;
+            }
+        }
+        if(count($e)>0)return false;
+        return true;
+    }
+
+    private function cDB($dl){
+        $e=[];
+        $types=['Master','Config','Data'];
+        if(is_array($dl))foreach ($dl as $db){
+            foreach ($types as $per){
+                $fDB=implode('_',['MS',$db,$per]);
+                if(!\MS\Core\Helper\MSDB::checkDB($db))
+                {
+                    if(!\MS\Core\Helper\MSDB::makeDB($fDB))$e[$fDB]=\MS\Core\Helper\MSDB::makeDB($fDB);
+                }
+
+            }
+//            if(!\MS\Core\Helper\MSDB::checkDB($db))
+//            {
+//                $n1=implode('_',['MS',$db,'Master']);
+//                $n2=implode('_',['MS',$db,'Config']);
+//                $n3=implode('_',['MS',$db,'Data']);
+//
+//
+//
+//                if(!\MS\Core\Helper\MSDB::makeDB($n1))$e[$n1]=\MS\Core\Helper\MSDB::makeDB($n1);
+//                if(!\MS\Core\Helper\MSDB::makeDB($n2))$e[$n2]=\MS\Core\Helper\MSDB::makeDB($n2);
+//                if(!\MS\Core\Helper\MSDB::makeDB($n3))$e[$n3]=\MS\Core\Helper\MSDB::makeDB($n3);
+//            }
+
+        }
+        if(count($e)==0)return true;
+        return false;
+    }
+    private function ftdfa($data,$actions){
 
         $err=[];
         foreach ($data as $row){
@@ -314,7 +429,7 @@ public function fillDataInAccountConfig(){
      * @param array $ua
      * @return bool
      */
-    public function ftD($m, $d, $ua=[]){
+    private function ftD($m, $d, $ua=[]){
         $err=[];
         foreach ($d as $v){
             if(!$m->rowAdd($v,$ua)){
@@ -335,7 +450,7 @@ public function fillDataInAccountConfig(){
      * @param $id
      * @return bool
      */
-    public function cNm($n, $id):bool{
+    private function cNm($n, $id):bool{
         $m=new \MS\Core\Helper\MSDB($n,$id);
 
         if(!$m->checkTableExist()){
@@ -351,7 +466,7 @@ public function fillDataInAccountConfig(){
      * @param $m
      * @return bool
      */
-    public function cNmWM($m){
+    private function cNmWM($m){
         if(!$m->checkTableExist()){
             return $m->migrate();
         }

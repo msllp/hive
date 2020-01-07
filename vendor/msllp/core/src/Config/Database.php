@@ -48,6 +48,29 @@ return
             'foreign_key_constraints' => true,
         ],
 
+
+        ///////For COMPANY
+
+
+        'CM'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_COMPANY_Master'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+        'CC'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_COMPANY_Config'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+        'CD'=>[
+            'driver' => 'sqlite',
+            'database' => base_path('MS/DB/Master/MS_COMPANY_Data'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+
 ///////For Accounts
 
 

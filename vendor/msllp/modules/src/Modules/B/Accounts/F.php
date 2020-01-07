@@ -30,12 +30,21 @@ class F
         return new \MS\Core\Helper\MSDB(__NAMESPACE__,'Account_Income');
 
     }
-
     public static function getExpenseModel(){
 
         return new \MS\Core\Helper\MSDB(__NAMESPACE__,'Account_Expense');
 
     }
+
+
+    public static function getIncomeModelForCurrent($CompanyId){
+        return new \MS\Core\Helper\MSDB(__NAMESPACE__,'Account_Income',[$CompanyId]);
+
+    }
+    public static function getExpenseModelForCurrent($CompanyId){
+        return new \MS\Core\Helper\MSDB(__NAMESPACE__,'Account_Expense',[$CompanyId]);
+    }
+
 
 
 

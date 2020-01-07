@@ -44,7 +44,7 @@
 
                         <div class="text-green-500 bg-gray-200 border hover:border-green-500 hover:shadow px-2 mx-1 hover:bg-gray-300 " v-if="checkMutlipleFirst(section)" v-on:click.prevent="addInputGroup(id)"><i class="fa fa-times-circle " style="transform: rotate(45deg)"></i> </div>
 
-                        <div class="text-red-500 bg-gray-200 border hover:border-red-500  hover:shadow px-2 mx-1 hover:bg-gray-300 " v-if="checkMutlipleSub(section)" v-on:click.prevent="removeInputGroup(id,section.rootId)"><i class="fa fa-times-circle "></i> </div>
+                        <div class="text-red-500 bg-gray-200 border hover:border-red-500  hover:shadow px-2 mx-1 hover:bg-gray-300 " v-if="checkMutlipleSub(section)" v-on:click.prevent="removeInputGroup(id,section.rootId,section.id)"><i class="fa fa-times-circle "></i> </div>
 
 
                     </div>
@@ -367,13 +367,19 @@
 
                 //console.log(this.msData.formData[id]);
             },
-            removeInputGroup:function (id,rootId) {
+            removeInputGroup:function (id,rootId,rid) {
                 //console.log(this.msCount.hasOwnProperty(id))
-
+               // console.log("ID: "+id+" Rootid: "+rootId);
                 if(confirm('Are you sure you want to remove Input group ?')){
                     if(this.msCount.hasOwnProperty(rootId) && this.msCount[rootId] >1){
-                        //    console.log(id);
+
+
+                        for ( var row in  this.msFormData[id].inputs){
+                            this.removeDataFromDynamicWithGroup(rid,this.msFormData[id].inputs[row].name);
+                        }
+
                         delete this.msFormData.splice(id, 1);
+
                         this.msCount[rootId]--;
 
                     }
@@ -429,13 +435,14 @@
                     if(this.msFormDataFinal[propertyName] instanceof Object){
                         var d=this.$refs[propertyName]
 
-                     //   console.log(d.msValue);
+                        //console.log(d.msValue);
 
-                        for(var file in this.msFormDataFinal[propertyName]){
+                       for(var file in this.msFormDataFinal[propertyName]){
 
                             formData.append(propertyName+"["+file+"]",this.msFormDataFinal[propertyName][file]);
+                           //console.log(file)
                         }
-
+                       // formData.append(propertyName,this.msFormDataFinal[propertyName]);
                     }else{
 
                         formData.append(propertyName,this.msFormDataFinal[propertyName]);
@@ -472,17 +479,31 @@
                 return true;
             },
 
+            removeDataFromDynamicWithGroup(id,name){
+             //   if(this.msFormDataFinal.hasOwnProperty(name) && this.msFormDataFinal[name].hasOwnProperty(id))console.log(id);     console.log(this.msFormDataFinal[name][id]);
+                if(this.msFormDataFinal.hasOwnProperty(name) && this.msFormDataFinal[name].hasOwnProperty(id)){
+                    delete this.msFormDataFinal[name][id];
+                }else {
+                    console.log( id);
+                    console.log( this.msFormDataFinal);
+                    console.log(name);
+
+                }
+
+            },
+
             removeDataFromDynamic(name,index,section,value){
-
-
+              //  console.log(this.msFormDataFinal[name].findIndex(key=>key==value));
 
                 delete this.msFormData[section].msDyData[name].msdata.splice(    this.msFormData[section].inputs[index].verifyBy.msdata.findIndex(data=>{return true;}), 1);
-                delete this.msFormDataFinal[name].splice(index, 1);
+               // console.log(this.msFormDataFinal[name].findIndex(key=>key==value))
+               delete this.msFormDataFinal[name].splice(index, 1);
+               //  delete this.msFormDataFinal[name][index];
 
             }
-            ,setInputData(name,value,multi=false){
+                ,setInputData(name,value,multi=false,index=0){
                 //console.log(name2 != "");
-                console.log(multi);
+               /// console.log(multi);
                 if(false){
                     if(!(this.msFormDataFinal[name] instanceof Object))
                     {
@@ -502,8 +523,15 @@
                 }else {
 
                     if(multi){
-                       //TODO: Make array for thing 
-                        if(typeof this.msFormData[name] == 'array' && !this.in_array(value,this.msFormData[name])) this.msFormDataFinal[name].push(value);
+                       //TODO: Make array for thing
+
+                        if( !this.msFormDataFinal.hasOwnProperty(name))this.msFormDataFinal[name]={};
+                     //   delete this.msFormDataFinal[name].splice(index, 1);
+                        //this.setInputDataFromDynamic(name,index,value);
+
+
+                                this.msFormDataFinal[name][index]=value;
+
                     }else{
 
                         this.msFormDataFinal[name]= value;

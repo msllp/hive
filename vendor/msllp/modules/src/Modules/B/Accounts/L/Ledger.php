@@ -1,11 +1,35 @@
 <?php
 namespace MS\Mod\B\Accounts\L;
+class Ledger{
 
-class Ledger
-{
+    public static function msreversefly($companyId=null){
 
+        if($companyId!=null)$d=$companyId;
+        if(!isset($d))$d=\MS\Mod\B\Company\L\Company::getCurrentCompany();
+        $m=[\MS\Mod\B\Accounts\F::getIncomeModelForCurrent($d),\MS\Mod\B\Accounts\F::getExpenseModelForCurrent($d)];
 
-public static function getTotalRevenue(){
+        foreach ($m as $table){
+            if($table->checkTableExist()){
+                $table->delete();
+            }
+        }
+    }
+
+    public static function msfly($companyId=null){
+
+        if($companyId!=null)$d=$companyId;
+        if(!isset($d))$d=\MS\Mod\B\Company\L\Company::getCurrentCompany();
+        $m=[\MS\Mod\B\Accounts\F::getIncomeModelForCurrent($d),\MS\Mod\B\Accounts\F::getExpenseModelForCurrent($d)];
+
+        foreach ($m as $table){
+            if(!$table->checkTableExist()){
+                $table->migrate();
+            }
+        }
+
+    }
+
+    public static function getTotalRevenue(){
 
     $m=\MS\Mod\B\Accounts\F::getIncomeModel();
     $out=number_format(0,2);

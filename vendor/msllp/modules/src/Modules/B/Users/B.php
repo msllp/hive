@@ -140,8 +140,29 @@ class B extends Master
         [
             'name'=>'MOD.User.Master.Roles.Login.Owner',
             'route'=>'/master/Users/Sub/Roles/login/Owner',
-            'method'=>'viewAllUserPaginationRoles',
+            'method'=>'loginForRootUser',
             'type'=>'get',
+        ],
+
+        [
+            'name'=>'MOD.User.Master.Roles.Login.Owner.Others',
+            'route'=>'/master/Users/Sub/Roles/login/Owner/check/Fromothers',
+            'method'=>'loginForRootUserFromOthers',
+            'type'=>'get',
+        ],
+
+        [
+            'name'=>'MOD.User.Master.Roles.Login.Owner.Callback',
+            'route'=>'/master/Users/Sub/Roles/login/Owner/Callback',
+            'method'=>'loginForRootUserFromOtherCallback',
+            'type'=>'get',
+        ],
+
+        [
+            'name'=>'MOD.User.Master.Roles.Login.Owner.Post',
+            'route'=>'/master/Users/Sub/Roles/login/Owner/check',
+            'method'=>'loginForRootUser',
+            'type'=>'post',
         ],
 
         [
@@ -182,6 +203,12 @@ class B extends Master
             'type'=>'get',
         ],
 
+        [
+            'name'=>'MOD.User.Test',
+            'route'=>'/Test',
+            'method'=>'cTest',
+            'type'=>'get',
+        ],
     ];
 
 
