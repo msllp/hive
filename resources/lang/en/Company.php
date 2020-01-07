@@ -18,8 +18,14 @@ return
         'con'=>'Contact No.',
         'email'=>'Email',
         'role'=>'Role',
-        'hasbranch'=>'Has a Branches ?'
-
+        'hasbranch'=>'Has a Branches ?',
+        'combasic'=>'Company Basic Details',
+        'comlegal'=>'Legal Details',
+        'comaddress'=>'Address Details',
+        'comdconde'=>'Contact Details',
+        'comadd'=>'Add Company',
+        'commanage'=> 'Manage Company Master',
+        'comviewall'=>'View All Company'
 
 
     ];
