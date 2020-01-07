@@ -2389,11 +2389,15 @@ __webpack_require__.r(__webpack_exports__);
       } //console.log(this.msData.formData[id]);
 
     },
-    removeInputGroup: function removeInputGroup(id, rootId) {
+    removeInputGroup: function removeInputGroup(id, rootId, rid) {
       //console.log(this.msCount.hasOwnProperty(id))
+      // console.log("ID: "+id+" Rootid: "+rootId);
       if (confirm('Are you sure you want to remove Input group ?')) {
         if (this.msCount.hasOwnProperty(rootId) && this.msCount[rootId] > 1) {
-          //    console.log(id);
+          for (var row in this.msFormData[id].inputs) {
+            this.removeDataFromDynamicWithGroup(rid, this.msFormData[id].inputs[row].name);
+          }
+
           delete this.msFormData.splice(id, 1);
           this.msCount[rootId]--;
         }
@@ -2430,11 +2434,12 @@ __webpack_require__.r(__webpack_exports__);
 
       for (var propertyName in this.msFormDataFinal) {
         if (this.msFormDataFinal[propertyName] instanceof Object) {
-          var d = this.$refs[propertyName]; //   console.log(d.msValue);
+          var d = this.$refs[propertyName]; //console.log(d.msValue);
 
           for (var file in this.msFormDataFinal[propertyName]) {
-            formData.append(propertyName + "[" + file + "]", this.msFormDataFinal[propertyName][file]);
-          }
+            formData.append(propertyName + "[" + file + "]", this.msFormDataFinal[propertyName][file]); //console.log(file)
+          } // formData.append(propertyName,this.msFormDataFinal[propertyName]);
+
         } else {
           formData.append(propertyName, this.msFormDataFinal[propertyName]);
         } // propertyName is what you want
@@ -2454,21 +2459,37 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.in_array(value, this.msFormDataFinal[name])) this.msFormDataFinal[name].push(value);
       return true;
     },
+    removeDataFromDynamicWithGroup: function removeDataFromDynamicWithGroup(id, name) {
+      //   if(this.msFormDataFinal.hasOwnProperty(name) && this.msFormDataFinal[name].hasOwnProperty(id))console.log(id);     console.log(this.msFormDataFinal[name][id]);
+      if (this.msFormDataFinal.hasOwnProperty(name) && this.msFormDataFinal[name].hasOwnProperty(id)) {
+        delete this.msFormDataFinal[name][id];
+      } else {
+        console.log(id);
+        console.log(this.msFormDataFinal);
+        console.log(name);
+      }
+    },
     removeDataFromDynamic: function removeDataFromDynamic(name, index, section, value) {
+      //  console.log(this.msFormDataFinal[name].findIndex(key=>key==value));
       delete this.msFormData[section].msDyData[name].msdata.splice(this.msFormData[section].inputs[index].verifyBy.msdata.findIndex(function (data) {
         return true;
-      }), 1);
-      delete this.msFormDataFinal[name].splice(index, 1);
+      }), 1); // console.log(this.msFormDataFinal[name].findIndex(key=>key==value))
+
+      delete this.msFormDataFinal[name].splice(index, 1); //  delete this.msFormDataFinal[name][index];
     },
     setInputData: function setInputData(name, value) {
       var multi = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      //console.log(name2 != "");
-      console.log(multi);
+      var index = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
+      //console.log(name2 != "");
+      /// console.log(multi);
       if (false) {} else {
         if (multi) {
-          //TODO: Make array for thing 
-          if (typeof this.msFormData[name] == 'array' && !this.in_array(value, this.msFormData[name])) this.msFormDataFinal[name].push(value);
+          //TODO: Make array for thing
+          if (!this.msFormDataFinal.hasOwnProperty(name)) this.msFormDataFinal[name] = {}; //   delete this.msFormDataFinal[name].splice(index, 1);
+          //this.setInputDataFromDynamic(name,index,value);
+
+          this.msFormDataFinal[name][index] = value;
         } else {
           this.msFormDataFinal[name] = value;
         }
@@ -2788,6 +2809,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     }
 
+    if (this.msData.hasOwnProperty('inputMultiple')) this.inputMultiple = this.msData.inputMultiple;
     if (this.msData.hasOwnProperty('inputInfo')) this.inputInfo = this.msData.inputInfo;
     if (this.msData.hasOwnProperty('vName')) this.inputVname = this.msData.vName; // if(!this.msData.hasOwnProperty('vName'))this.inputVname=this.msData.name;
 
@@ -2798,19 +2820,15 @@ __webpack_require__.r(__webpack_exports__);
     if (this.msData.hasOwnProperty('required')) this.inputRequired = this.msData.required;
 
     if (this.msData.hasOwnProperty('verifyBy')) {
-      if (this.msData.verifyBy.hasOwnProperty('msdata')) this.inputAuto = this.msData.verifyBy.msdata;
-      if (this.msData.verifyBy.hasOwnProperty('value')) this.dValue = this.msData.verifyBy.value;
-      if (this.msData.verifyBy.hasOwnProperty('text')) this.dText = this.msData.verifyBy.text;
+      if (this.msData.verifyBy.hasOwnProperty('msdata')) this.inputAuto = this.msData.verifyBy.msdata; //    if(this.msData.verifyBy.hasOwnProperty('value'))this.dValue=this.msData.verifyBy.value;
 
-      if (this.inputMultiple) {//   this.fdValue=this.inputAuto.find(data=>{data[this.dValue]==});
-      }
+      if (this.msData.verifyBy.hasOwnProperty('text')) this.dText = this.msData.verifyBy.text;
+      if (this.msData.verifyBy.hasOwnProperty('value')) this.dValue = this.msData.verifyBy.value;
     }
 
     if (this.msData.hasOwnProperty('value')) {
       this.dValue = this.msData.value;
     }
-
-    if (this.msData.hasOwnProperty('inputMultiple')) this.inputMultiple = this.msData.inputMultiple;
 
     if (this.msData.hasOwnProperty('validation')) {
       var str = this.msData.validation;
@@ -2836,7 +2854,7 @@ __webpack_require__.r(__webpack_exports__);
         break;
 
       default:
-        if (this.hasOwnProperty('dValue')) this.msValue = this.dValue;
+        if (this.hasOwnProperty('dValue') && !this.inputMultiple) this.msValue = this.dValue;
         break;
     } //   var finalArray= this.makeArrayForInput(this);
 
@@ -2858,9 +2876,10 @@ __webpack_require__.r(__webpack_exports__);
       var localISOTime = new Date(Date.now() - tzoffset).toISOString().slice(0, 10); //   console.log((new Date(Date.now() - tzoffset)).getTimezoneOffset());
 
       this.msValue = localISOTime;
-    }
+    } //    if(this.msData.hasOwnProperty('inputMultiple')) return this.$parent.setInputData(this.inputName,val,this.msData.inputMultiple);
 
-    this.$parent.setInputData(this.inputName, this.msValue, this.inputMultiple);
+
+    if (!this.inputMultiple) this.$parent.setInputData(this.inputName, this.msValue, this.inputMultiple, this.msGroupIndex);
     if (window.innerWidth < 800) this.onMobile = true; //  console.log(this.inputAuto);
     // this.inputAuto.push({
     //         dText: 'hello',
@@ -2874,8 +2893,8 @@ __webpack_require__.r(__webpack_exports__);
       this.msValid = "is-invalid";
     },
     setErrorZero: function setErrorZero() {
-      this.msValid = "is-valid";
-      this.$parent["in"];
+      this.msValid = "is-valid"; //this.$parent.in
+
       this.inputError = new Object();
     },
     getValue: function getValue() {
@@ -2917,6 +2936,7 @@ __webpack_require__.r(__webpack_exports__);
     setFinalInputFromAuto: function setFinalInputFromAuto(value) {
       this.msFocus = false;
       this.msValue = value;
+      this.$parent.setInputData(this.inputName, value, this.inputMultiple, this.msGroupIndex);
     },
     inpututProcess: function inpututProcess(val, oldVal) {
       if (this.inputRequired) {
@@ -2974,9 +2994,10 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.msValid = " ";
       } //  console.log(val);
+      //  if(this.msData.hasOwnProperty('inputMultiple')) return this.$parent.setInputData(this.inputName,val,this.msData.inputMultiple,this.msData.msGroupIndex);
 
 
-      this.$parent.setInputData(this.inputName, val);
+      this.$parent.setInputData(this.inputName, val, this.inputMultiple, this.msGroupIndex);
     },
     visiblePassowrd: function visiblePassowrd() {
       if (this.inputPasswordVisible) {
@@ -3046,8 +3067,18 @@ __webpack_require__.r(__webpack_exports__);
         case 'text':
           if (this.inputAuto.length > 0) {
             var msData1 = this.inputAuto;
-            var msThis = this;
-            console.log(msData1.filter(function (ele) {}));
+            var msThis = this; // console.log(
+            //
+            //     msData1.filter(function (ele) {
+            //
+            //
+            //
+            //
+            //     })
+            //
+            //
+            //
+            //                        );
           }
 
           break;
@@ -3939,8 +3970,206 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//TODO Make Post Request & Error Display and Show Forgot Password Button after 3 unsuccessful Try to login.
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "msLoginPage"
+  name: "msLoginPage",
+  props: {
+    'msData': {
+      type: Object,
+      required: true,
+      "default": {}
+    }
+  },
+  data: function data() {
+    return {
+      msPageData: {},
+      waitingForData: false,
+      msError: false,
+      msErrorData: [] //  loader:null
+
+    };
+  },
+  beforeMount: function beforeMount() {
+    var loader = [{
+      propName: 'ClientIcon',
+      setPropName: 'cIcon'
+    }, {
+      propName: 'MasterIcon',
+      setPropName: 'mIcon'
+    }, {
+      propName: 'formData',
+      setPropName: 'fData',
+      defualt: {}
+    }, {
+      propName: 'inspire',
+      setPropName: 'inspire'
+    }, {
+      propName: 'copyrightPre',
+      setPropName: 'copyrightPre'
+    }, {
+      propName: 'copyrightPer',
+      setPropName: 'copyrightPer'
+    }, {
+      propName: 'bgImg',
+      setPropName: 'bgImg'
+    }, {
+      propName: 'bgImg',
+      setPropName: 'bgImg'
+    }, {
+      propName: 'OtherSource',
+      setPropName: 'os'
+    }, {
+      propName: 'AllSoucesData',
+      setPropName: 'asd'
+    }, {
+      propName: 'VerifyCallback',
+      setPropName: 'vcurl'
+    }, {
+      propName: 'VerifyUrl',
+      setPropName: 'vurl'
+    }]; //  this.loader=loader;
+
+    var mThis = this;
+    loader.forEach(function (load) {
+      //   console.log(load);
+      if (this.msData.hasOwnProperty(load.propName)) {
+        this.msPageData[load.setPropName] = this.msData[load.propName];
+      } else {
+        if (load.hasOwnProperty('defualt')) {
+          this.msPageData[load.setPropName] = load.defualt;
+        } else {
+          this.msPageData[load.setPropName] = null;
+        }
+      }
+    }, this); //for (load ,key in loader)
+    //   if(this.msData.hasOwnProperty('ClientIcon'))this.msPageData.cIcon=this.msData.ClientIcon;
+  },
+  methods: {
+    sendDataToLoginData: function sendDataToLoginData() {
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      //  console.log(data.hasOwnProperty('route'));
+      var link = data.hasOwnProperty('route') ? data.route : "";
+
+      if (link != "") {
+        // console.log(window.axios);
+        var t = this;
+        t.waitingForData = true;
+        t.msErrorData = [];
+        t.msError = t.msError ? false : false;
+        window.axios.post(link, {
+          firstName: 'Fred',
+          lastName: 'Flintstone'
+        }).then(function (response) {
+          t.msError = false;
+          t.waitingForData = false;
+          console.log(response);
+        })["catch"](function (error) {
+          t.msError = true;
+          t.waitingForData = false; //t.msErrorData=;
+
+          t.setMSErrorData(error.response.data.errors); //console.log();
+        });
+      } //if()var link = data.route
+
+    },
+    setMSErrorData: function setMSErrorData(data) {
+      var t = this;
+      Object.keys(data).forEach(function (key, index) {
+        console.log(data[key]); // key: the name of the object key
+        // index: the ordinal position of the key within the object
+
+        t.msErrorData.push(data[key]);
+      }); //this.msErrorData=data;
+    }
+  }
 });
 
 /***/ }),
@@ -42570,7 +42799,8 @@ var render = function() {
                                             $event.preventDefault()
                                             return _vm.removeInputGroup(
                                               id,
-                                              section.rootId
+                                              section.rootId,
+                                              section.id
                                             )
                                           }
                                         }
@@ -45258,7 +45488,164 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    { staticClass: "ms-login-div select-none" },
+    _vm._l(_vm.msPageData.fData.formData, function(formGroup) {
+      return _c("div", [
+        _c("div", { staticClass: "ms-login-h" }, [
+          _c("img", {
+            staticClass: "ms-clientlogo",
+            attrs: { src: _vm.msPageData.cIcon }
+          }),
+          _vm._v(" "),
+          _c("hr"),
+          _vm._v(" "),
+          _c("div", { staticClass: "px-6 py-1 " }, [
+            _c("div", { staticClass: "font-bold text-xl mb-4 " }, [
+              _vm._v(_vm._s(_vm.msPageData.fData.formTitle))
+            ]),
+            _vm._v(" "),
+            _vm.msError
+              ? _c(
+                  "div",
+                  { staticClass: "ms-login-error-box text-xs" },
+                  _vm._l(_vm.msErrorData, function(er) {
+                    return _c(
+                      "ul",
+                      _vm._l(er, function(e) {
+                        return _c("li", [_vm._v(_vm._s(e) + " ")])
+                      }),
+                      0
+                    )
+                  }),
+                  0
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.waitingForData
+              ? _c(
+                  "table",
+                  { staticClass: "ms-login-table  mb-2" },
+                  _vm._l(formGroup.inputs, function(input) {
+                    return _c(
+                      "tr",
+                      { staticClass: "text-gray-700 text-base" },
+                      [
+                        _c("th", [
+                          _vm._v(_vm._s(input.vName) + "  "),
+                          input.type == "password"
+                            ? _c("i", { staticClass: "fi2 flaticon-key" })
+                            : _vm._e(),
+                          input.type == "text"
+                            ? _c("i", { staticClass: "fi2 flaticon-user-2" })
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c("input", {
+                            attrs: { type: input.type, name: input.name }
+                          })
+                        ])
+                      ]
+                    )
+                  }),
+                  0
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.waitingForData
+              ? _c("div", [_vm._v("Please wait...")])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "px-6 py-4  flex justify-center " },
+            _vm._l(_vm.msPageData.fData.actionButton, function(btn) {
+              var _obj
+              return _c(
+                "span",
+                {
+                  staticClass: "ms-login-btn",
+                  on: {
+                    click: function($event) {
+                      return _vm.sendDataToLoginData(btn)
+                    }
+                  }
+                },
+                [
+                  _c("i", {
+                    class: ((_obj = {}),
+                    (_obj[btn.btnIcon] = true),
+                    (_obj["inline-flex"] = true),
+                    _obj)
+                  }),
+                  _vm._v(" "),
+                  _c("strong", { class: { "inline-flex": true } }, [
+                    _vm._v(" " + _vm._s(btn.btnText))
+                  ])
+                ]
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _vm.msPageData.os
+            ? _c("div", { staticClass: "ms-login-others-box" }, [
+                _c("div", { staticClass: "text-center" }, [
+                  _c("hr"),
+                  _vm._v("\n                        or "),
+                  _c("br"),
+                  _vm._v(
+                    " Sign in\n                        with your social network\n                        "
+                  ),
+                  _c(
+                    "div",
+                    { staticClass: "ms-login-others-btn-box " },
+                    _vm._l(_vm.msPageData.asd, function(sor) {
+                      var _obj
+                      return _c("div", { staticClass: "cursor-pointer" }, [
+                        _c("a", { attrs: { href: sor.VerifyUrl } }, [
+                          _c("i", {
+                            class: ((_obj = {}),
+                            (_obj[sor.VerifyIcon] = true),
+                            _obj)
+                          })
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "ms-login-copyright-box" }, [
+            _c("span", { staticClass: "ms-login-copyright-pre" }, [
+              _vm._v(" " + _vm._s(_vm.msPageData.copyrightPre))
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "ms-login-copyright-icon-class" }, [
+              _c("img", {
+                staticClass: "ms-login-msater-icon",
+                attrs: { src: _vm.msPageData.mIcon }
+              })
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "ms-login-copyright-per" }, [
+              _vm._v(" " + _vm._s(_vm.msPageData.copyrightPer))
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "ms-login-bottom-line" }, [
+          _vm._v("\n    " + _vm._s(_vm.msPageData.inspire) + "\n")
+        ])
+      ])
+    }),
+    0
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
